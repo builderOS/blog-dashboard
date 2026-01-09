@@ -13,6 +13,7 @@
  */
 
 import type { Asset, AssetCategory } from '../../schema'
+import { deriveSectionCompleteness } from '../../lib/deriveSectionCompleteness'
 import AssetRow from './AssetRow'
 
 interface AssetTableProps {
@@ -34,10 +35,16 @@ export function AssetTable({ assets, category, title, subtitle }: AssetTableProp
   if (filtered.length === 0) return null
 
   const displayTitle = title || CATEGORY_TITLES[category]
+  const completeness = deriveSectionCompleteness(assets, category)
 
   return (
     <section className="asset-table-section">
-      <h3 className="asset-table-title">{displayTitle}</h3>
+      <div className="asset-table-header">
+        <h3 className="asset-table-title">{displayTitle}</h3>
+        <span className="asset-table-completeness">
+          {completeness.verified}/{completeness.total} verified
+        </span>
+      </div>
       {subtitle && <p className="asset-table-subtitle">{subtitle}</p>}
 
       <table className="asset-table">

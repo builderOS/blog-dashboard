@@ -19,16 +19,26 @@
  * // It must never be required to change system state.
  */
 
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useBlogsData } from '../../storage/useBlogsData'
 import { deriveHealth } from '../../lib/deriveHealth'
+import { runAllChecks, type CapabilityCheckResult } from '../../lib/capabilityChecks'
 import AssetTable from '../components/AssetTable'
 import HealthSummary from '../components/HealthSummary'
 import StatusBadge from '../components/StatusBadge'
 
+interface CheckResults {
+  productionSite: CapabilityCheckResult
+  googleSearchConsole: CapabilityCheckResult
+  googleAnalytics: CapabilityCheckResult
+}
+
 export function BlogDetail() {
   const { blogId } = useParams<{ blogId: string }>()
   const { blogs, loading, error } = useBlogsData()
+  const [checkResults, setCheckResults] = useState<CheckResults | null>(null)
+  const [checking, setChecking] = useState(false)
 
   if (loading) {
     return <div className="empty-state">Loading...</div>
@@ -64,6 +74,17 @@ export function BlogDetail() {
   const productionUrl = getAssetUrl('production_site')
   const githubUrl = getAssetUrl('github_repo')
   const lovableUrl = getAssetUrl('lovable_project')
+
+  // Manual capability check handler
+  const handleRunChecks = async () => {
+    setChecking(true)
+    try {
+      const results = await runAllChecks(blog.domain, productionUrl)
+      setCheckResults(results)
+    } finally {
+      setChecking(false)
+    }
+  }
 
   return (
     <div className="blog-detail">
@@ -127,7 +148,56 @@ export function BlogDetail() {
         subtitle="Nice to have, not blocking"
       />
 
-      {/* Section 5: Notes & Decisions */}
+      {/* Section 5: Manual Capability Checks */}
+      <div className="capability-checks-section">
+        <h3>Capability Checks</h3>
+        <p className="section-subtitle">Read-only checks — does not modify any data</p>
+
+        <button
+          className="check-btn"
+          onClick={handleRunChecks}
+          disabled={checking}
+        >
+          {checking ? 'Running checks...' : 'Run read-only checks'}
+        </button>
+
+        {checkResults && (
+          <div className="check-results">
+            <div className="check-result">
+              <span className="check-label">Production Site:</span>
+              <span className={`check-status ${checkResults.productionSite.detected ? 'detected' : 'not-detected'}`}>
+                {checkResults.productionSite.detected ? 'Reachable' : 'Not detected'}
+              </span>
+              {checkResults.productionSite.notes && (
+                <span className="check-notes">{checkResults.productionSite.notes}</span>
+              )}
+            </div>
+            <div className="check-result">
+              <span className="check-label">Google Search Console:</span>
+              <span className={`check-status ${checkResults.googleSearchConsole.detected ? 'detected' : 'not-detected'}`}>
+                {checkResults.googleSearchConsole.detected ? 'Detected' : 'Not detected'}
+              </span>
+              {checkResults.googleSearchConsole.notes && (
+                <span className="check-notes">{checkResults.googleSearchConsole.notes}</span>
+              )}
+            </div>
+            <div className="check-result">
+              <span className="check-label">Google Analytics:</span>
+              <span className={`check-status ${checkResults.googleAnalytics.detected ? 'detected' : 'not-detected'}`}>
+                {checkResults.googleAnalytics.detected ? 'Detected' : 'Not detected'}
+              </span>
+              {checkResults.googleAnalytics.notes && (
+                <span className="check-notes">{checkResults.googleAnalytics.notes}</span>
+              )}
+            </div>
+            <p className="check-timestamp">
+              Checked at: {new Date(checkResults.productionSite.checkedAt).toLocaleString()}
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Section 6: Notes & Decisions */}
       {blog.notes && (
         <div className="asset-section">
           <h3>Notes & Decisions</h3>

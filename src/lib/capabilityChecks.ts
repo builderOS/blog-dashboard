@@ -1,74 +1,96 @@
 /**
  * Capability Checks
  *
- * This module defines the interface for read-only API checks.
- * Checks can update JSON or populate a cache.
- * They never run inside rendering logic.
+ * Read-only detection of external platform presence.
  *
- * Currently: Interface only, not implemented.
- * Later: These become pluggable read-only checks.
+ * HARD RULES:
+ * - Never runs automatically
+ * - Never blocks rendering
+ * - Never changes assets directly
+ * - Only suggests updates
+ *
+ * Currently: Manual placeholders
+ * Later: Can write to separate cache, generate suggested patches
+ * But NEVER auto-mutate blogs.json
  */
-
-// ============================================================================
-// Types
-// ============================================================================
 
 export interface CapabilityCheckResult {
-  status: 'verified' | 'error'
-  checkedAt: string // ISO timestamp
+  detected: boolean
+  checkedAt: string
   notes?: string
-}
-
-// ============================================================================
-// Check Functions (Intentionally Unimplemented)
-// ============================================================================
-
-/**
- * Check Google Search Console property for a domain.
- * Read-only: queries GSC API to verify property exists.
- */
-export async function checkGoogleSearchConsole(
-  _domain: string
-): Promise<CapabilityCheckResult> {
-  throw new Error('Not implemented')
-}
-
-/**
- * Check Google Analytics property for a domain.
- * Read-only: queries GA API to verify property exists.
- */
-export async function checkGoogleAnalytics(
-  _propertyId: string
-): Promise<CapabilityCheckResult> {
-  throw new Error('Not implemented')
 }
 
 /**
  * Check if a production site is reachable.
  * Read-only: performs HEAD request to verify site responds.
  */
-export async function checkProductionSite(
-  _url: string
-): Promise<CapabilityCheckResult> {
-  throw new Error('Not implemented')
+export async function checkProductionSite(url: string): Promise<CapabilityCheckResult> {
+  try {
+    await fetch(url, { method: 'HEAD', mode: 'no-cors' })
+    return {
+      detected: true,
+      checkedAt: new Date().toISOString(),
+      notes: 'Site responded',
+    }
+  } catch {
+    return {
+      detected: false,
+      checkedAt: new Date().toISOString(),
+      notes: 'Site unreachable or blocked by CORS',
+    }
+  }
 }
 
 /**
- * Check GitHub repository existence.
- * Read-only: queries GitHub API to verify repo exists.
+ * Check Google Search Console property existence.
+ * Read-only: placeholder for manual verification.
  */
-export async function checkGitHubRepo(
-  _repoUrl: string
-): Promise<CapabilityCheckResult> {
-  throw new Error('Not implemented')
+export async function checkGoogleSearchConsole(domain: string): Promise<CapabilityCheckResult> {
+  // For now: manual placeholder
+  // Future: Could query GSC API with proper auth
+  return {
+    detected: false,
+    checkedAt: new Date().toISOString(),
+    notes: `Manual verification required for ${domain}`,
+  }
 }
 
 /**
- * Check Lovable project existence.
- * Read-only: queries Lovable API to verify project exists.
+ * Check Google Analytics property existence.
+ * Read-only: placeholder for manual verification.
  */
-export async function checkLovableProject(
-  _projectUrl: string
-): Promise<CapabilityCheckResult> {
-  throw new Error('Not implemented')
+export async function checkGoogleAnalytics(domain: string): Promise<CapabilityCheckResult> {
+  // For now: manual placeholder
+  // Future: Could check for GA tag on live site
+  return {
+    detected: false,
+    checkedAt: new Date().toISOString(),
+    notes: `Manual verification required for ${domain}`,
+  }
+}
+
+/**
+ * Run all capability checks for a blog.
+ * Returns summary of what was detected.
+ */
+export async function runAllChecks(domain: string, productionUrl?: string): Promise<{
+  productionSite: CapabilityCheckResult
+  googleSearchConsole: CapabilityCheckResult
+  googleAnalytics: CapabilityCheckResult
+}> {
+  const [productionSite, googleSearchConsole, googleAnalytics] = await Promise.all([
+    productionUrl ? checkProductionSite(productionUrl) : Promise.resolve({
+      detected: false,
+      checkedAt: new Date().toISOString(),
+      notes: 'No production URL configured',
+    }),
+    checkGoogleSearchConsole(domain),
+    checkGoogleAnalytics(domain),
+  ])
+
+  return {
+    productionSite,
+    googleSearchConsole,
+    googleAnalytics,
+  }
 }
