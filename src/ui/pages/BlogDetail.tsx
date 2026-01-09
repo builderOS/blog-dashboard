@@ -22,8 +22,7 @@
 import { Link, useParams } from 'react-router-dom'
 import { useBlogsData } from '../../storage/useBlogsData'
 import { deriveHealth } from '../../lib/deriveHealth'
-import type { Asset } from '../../schema'
-import AssetCard from '../components/AssetCard'
+import AssetTable from '../components/AssetTable'
 import HealthSummary from '../components/HealthSummary'
 import StatusBadge from '../components/StatusBadge'
 
@@ -57,19 +56,6 @@ export function BlogDetail() {
   }
 
   const health = deriveHealth(blog)
-
-  // Group assets by category
-  const internalAssets = blog.assets.filter(a => a.category === 'internal')
-  const externalAssets = blog.assets.filter(a => a.category === 'external')
-  const distributionAssets = blog.assets.filter(a => a.category === 'distribution')
-
-  // Further group external assets
-  const searchAssets = externalAssets.filter(a =>
-    ['google_search_console', 'google_analytics'].includes(a.type)
-  )
-  const socialAssets = externalAssets.filter(a =>
-    ['facebook_page', 'instagram_account', 'x_account'].includes(a.type)
-  )
 
   // Get quick links for header (teleport links, not actions)
   const getAssetUrl = (type: string): string | undefined =>
@@ -121,38 +107,25 @@ export function BlogDetail() {
       {/* Section 1: Overall Health Summary (derived, never stored) */}
       <HealthSummary health={health} />
 
-      {/* Section 2: Internal Factory Assets (CRITICAL) */}
-      {internalAssets.length > 0 && (
-        <AssetSection
-          title="Internal Factory Assets"
-          subtitle="Does this blog exist in our system?"
-          assets={internalAssets}
-        />
-      )}
+      {/* Section 2: Internal Factory Assets */}
+      <AssetTable
+        assets={blog.assets}
+        category="internal"
+        subtitle="Does this blog exist in our system?"
+      />
 
       {/* Section 3: External Platforms */}
-      {searchAssets.length > 0 && (
-        <AssetSection
-          title="Search & Measurement"
-          assets={searchAssets}
-        />
-      )}
+      <AssetTable
+        assets={blog.assets}
+        category="external"
+      />
 
-      {socialAssets.length > 0 && (
-        <AssetSection
-          title="Social Presence"
-          assets={socialAssets}
-        />
-      )}
-
-      {/* Section 4: Distribution Readiness (OPTIONAL) */}
-      {distributionAssets.length > 0 && (
-        <AssetSection
-          title="Distribution Readiness"
-          subtitle="Nice to have, not blocking"
-          assets={distributionAssets}
-        />
-      )}
+      {/* Section 4: Distribution Readiness */}
+      <AssetTable
+        assets={blog.assets}
+        category="distribution"
+        subtitle="Nice to have, not blocking"
+      />
 
       {/* Section 5: Notes & Decisions */}
       {blog.notes && (
@@ -161,26 +134,6 @@ export function BlogDetail() {
           <div className="blog-notes">{blog.notes}</div>
         </div>
       )}
-    </div>
-  )
-}
-
-interface AssetSectionProps {
-  title: string
-  subtitle?: string
-  assets: Asset[]
-}
-
-function AssetSection({ title, subtitle, assets }: AssetSectionProps) {
-  return (
-    <div className="asset-section">
-      <h3>{title}</h3>
-      {subtitle && <p className="section-subtitle">{subtitle}</p>}
-      <div className="asset-list">
-        {assets.map(asset => (
-          <AssetCard key={asset.assetId} asset={asset} />
-        ))}
-      </div>
     </div>
   )
 }

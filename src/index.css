@@ -352,3 +352,90 @@ a:hover {
   font-size: 0.875rem;
   white-space: pre-wrap;
 }
+
+/* Asset Table */
+.asset-table-section {
+  margin-bottom: 2rem;
+}
+
+.asset-table-title {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.asset-table-subtitle {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1rem;
+}
+
+.asset-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.asset-table th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.asset-table-row {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.asset-table-row:last-child {
+  border-bottom: none;
+}
+
+.asset-table-cell {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  vertical-align: middle;
+}
+
+.asset-notes-cell {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+.no-link {
+  color: var(--color-text-muted);
+}
+
+/* Importance Badge */
+.importance-badge {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.importance-badge.critical {
+  border-color: var(--color-importance-critical);
+  color: var(--color-importance-critical);
+}
+
+.importance-badge.important {
+  border-color: var(--color-importance-important);
+  color: var(--color-importance-important);
+}
+
+.importance-badge.optional {
+  border-color: var(--color-text-muted);
+  color: var(--color-text-muted);
+}
