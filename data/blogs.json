@@ -1,0 +1,136 @@
+{
+  "schemaVersion": "1.0",
+  "blogs": [
+    {
+      "id": "antiqueclocks.blog",
+      "displayName": "Antique Clocks",
+      "domain": "antiqueclocks.blog",
+      "status": "active",
+      "notes": "Evergreen topic blog",
+      "assets": [
+        {
+          "assetId": "production-site",
+          "type": "production_site",
+          "category": "internal",
+          "importance": "critical",
+          "status": "verified",
+          "label": "Production Website",
+          "url": "https://antiqueclocks.blog",
+          "evidence": []
+        },
+        {
+          "assetId": "designer-repo",
+          "type": "github_repo",
+          "category": "internal",
+          "importance": "critical",
+          "status": "connected",
+          "label": "Designer Repo",
+          "url": "https://github.com/blog-surfaces/static-bloom",
+          "evidence": []
+        },
+        {
+          "assetId": "lovable-project",
+          "type": "lovable_project",
+          "category": "internal",
+          "importance": "critical",
+          "status": "created",
+          "label": "Lovable Project",
+          "evidence": []
+        },
+        {
+          "assetId": "google-search-console",
+          "type": "google_search_console",
+          "category": "external",
+          "importance": "critical",
+          "status": "not_created",
+          "label": "Google Search Console",
+          "evidence": []
+        },
+        {
+          "assetId": "google-analytics",
+          "type": "google_analytics",
+          "category": "external",
+          "importance": "important",
+          "status": "not_created",
+          "label": "Google Analytics",
+          "evidence": []
+        },
+        {
+          "assetId": "facebook-page",
+          "type": "facebook_page",
+          "category": "external",
+          "importance": "optional",
+          "status": "skipped",
+          "label": "Facebook Page",
+          "notes": "Not pursuing social for this blog",
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "id": "abbotsford.blog",
+      "displayName": "Abbotsford Chronicle",
+      "domain": "abbotsford.blog",
+      "status": "active",
+      "notes": "Local, time-sensitive city blog",
+      "assets": [
+        {
+          "assetId": "production-site",
+          "type": "production_site",
+          "category": "internal",
+          "importance": "critical",
+          "status": "verified",
+          "label": "Production Website",
+          "url": "https://abbotsford.blog",
+          "evidence": []
+        },
+        {
+          "assetId": "designer-repo",
+          "type": "github_repo",
+          "category": "internal",
+          "importance": "critical",
+          "status": "connected",
+          "label": "Designer Repo",
+          "url": "https://github.com/blog-surfaces/abbotsford-chronicle",
+          "evidence": []
+        },
+        {
+          "assetId": "lovable-project",
+          "type": "lovable_project",
+          "category": "internal",
+          "importance": "critical",
+          "status": "created",
+          "label": "Lovable Project",
+          "evidence": []
+        },
+        {
+          "assetId": "google-search-console",
+          "type": "google_search_console",
+          "category": "external",
+          "importance": "critical",
+          "status": "not_created",
+          "label": "Google Search Console",
+          "evidence": []
+        },
+        {
+          "assetId": "google-analytics",
+          "type": "google_analytics",
+          "category": "external",
+          "importance": "important",
+          "status": "not_created",
+          "label": "Google Analytics",
+          "evidence": []
+        },
+        {
+          "assetId": "instagram-account",
+          "type": "instagram_account",
+          "category": "external",
+          "importance": "important",
+          "status": "not_created",
+          "label": "Instagram",
+          "evidence": []
+        }
+      ]
+    }
+  ]
+}
